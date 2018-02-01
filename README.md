@@ -1,5 +1,5 @@
 # Micropython demo clock on ESP32
-ESP32 with DHT22, DS18B22, DS3231 sensors and dot LED matrix on MAX7219
+ESP32 with DHT22, DS18B20, DS3231 sensors and dot LED matrix on MAX7219
 
 ## Download Micropython firmware
 
