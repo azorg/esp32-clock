@@ -8,7 +8,8 @@ import onewire
 import ds18x20
 from ds3231 import *
 import max7219
-from font_4x6 import font_4x6 as FONT
+#from font_4x6 import font_4x6 as FONT
+from font_6x8 import font_6x8 as FONT
 import framebuf
 import gc
 gc.collect()
@@ -100,6 +101,7 @@ display.brightness(1) # [0..15]
 display.fill(0)
 display.show()
 
+"""
 # put text (4x6 font) on frame buffer
 def put_text(fbuf, text, x=0, y=0):
     for uchr in text:
@@ -109,6 +111,17 @@ def put_text(fbuf, text, x=0, y=0):
                 fbuf.pixel(x + i, y + j,
                            1 if (sym[i] & (0x20 >> j)) else 0)
         x += 4
+"""
+
+# put text (6x8 font) on frame buffer
+def put_text(fbuf, text, x=0, y=0):
+    for uchr in text:
+        sym = FONT[ord(uchr)]
+        for i in range(6):
+            for j in range(8):
+                fbuf.pixel(x + i, y + j,
+                           1 if (sym[i] & (0x80 >> j)) else 0)
+        x += 6
 
 
 # DHT22 on GPIO-15
@@ -133,7 +146,7 @@ for i in range(3):
     display.show()
     time.sleep_ms(250)
 
-put_text(display, "HELLO!!!")
+put_text(display, "HELLO", x=1)
 display.show()
 time.sleep_ms(1000)
 
@@ -141,7 +154,8 @@ time.sleep_ms(1000)
 # FSM
 cnt = 0
 fsm = 0
-days = ("SU", "MO", "TU", "WE", "TH", "FR", "SA")
+#days = ("SU", "MO", "TU", "WE", "TH", "FR", "SA")
+days = ("ВОСКР", "ПОНЕД", "ВТОРН", "СРЕДА", "ЧЕТВ", "ПЯТН", "СУББ")
 
 def tick(timer):
     global dht, ds, rtc, cnt, fsm, days
@@ -160,6 +174,7 @@ def tick(timer):
     t2 = ds.get()
     dt, t3 = rtc.all()
 
+    """
     if fsm == 1:
         fsm = 2 # show temperature
         cnt = 3
@@ -174,9 +189,31 @@ def tick(timer):
         fsm = 1 # show time
         cnt = 5
         txt = "%2s %02i:%02i" % (days[dt[3]], dt[4], dt[5])
-    
+    """ 
+
+    if fsm == 1:
+        fsm = 2 # show temperature
+        cnt = 3
+        txt = "%.1f°" % t2
+    elif fsm == 2:
+        fsm = 3 # showh humidity
+        cnt = 2
+        txt = "%.1f%%" % h
+    elif fsm == 3:
+        fsm = 4 # show date
+        cnt = 2
+        txt = "%02i.%02i" % (dt[1], dt[2])
+    elif fsm == 4:
+        fsm = 5 # show weekday
+        cnt = 1
+        txt = days[dt[3]]
+    else: # fsm == 5
+        fsm = 1 # show time
+        cnt = 6
+        txt = "%02i:%02i" % (dt[4], dt[5])
+
     display.fill(0)
-    put_text(display, txt, x=0, y=0)
+    put_text(display, txt, x=1, y=0)
     display.show()
     gc.collect()
 
