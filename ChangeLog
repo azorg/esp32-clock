@@ -2,3 +2,6 @@
  + first real test and initial commit
  * change 4x6 pixels font to 6x8
 
+2018.02.04
+ * fix bug in weekday index
+

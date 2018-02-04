@@ -154,8 +154,8 @@ time.sleep_ms(1000)
 # FSM
 cnt = 0
 fsm = 0
-#days = ("SU", "MO", "TU", "WE", "TH", "FR", "SA")
-days = ("ВОСКР", "ПОНЕД", "ВТОРН", "СРЕДА", "ЧЕТВ", "ПЯТН", "СУББ")
+#days = ("MO", "TU", "WE", "TH", "FR", "SA", "SU")
+days = ("ПОНЕД", "ВТОРН", "СРЕДА", "ЧЕТВ", "ПЯТН", "СУББ", "ВОСКР")
 
 def tick(timer):
     global dht, ds, rtc, cnt, fsm, days
@@ -188,7 +188,7 @@ def tick(timer):
     else: # fsm == 3
         fsm = 1 # show time
         cnt = 5
-        txt = "%2s %02i:%02i" % (days[dt[3]], dt[4], dt[5])
+        txt = "%2s %02i:%02i" % (days[dt[3] - 1], dt[4], dt[5])
     """ 
 
     if fsm == 1:
@@ -206,7 +206,7 @@ def tick(timer):
     elif fsm == 4:
         fsm = 5 # show weekday
         cnt = 1
-        txt = days[dt[3]]
+        txt = days[dt[3] - 1]
     else: # fsm == 5
         fsm = 1 # show time
         cnt = 6
