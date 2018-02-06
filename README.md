@@ -94,7 +94,7 @@ Connect MAX7219 to SPI:
 | 3V         | 3.3V          | VCC                      |
 | GND        | GND           | GND                      |
 | D14        | GPIO14 = SCK  | CLK                      |
-| D12        | GPIO12 = MOSO | n/c                      |
+| D12        | GPIO12 = MISO | n/c                      |
 | D13        | GPIO13 = MOSI | DIN                      |
 | D27        | GPIO27        | CS (software)            |
 
